@@ -9,9 +9,9 @@ export default function Nav() {
     <Tabs isFitted variant="soft-rounded" colorScheme="green">
       <TabList>
         <Tab>Search</Tab>
-        <Tab>Bookmarks</Tab>
+        <Tab>WatchList</Tab>
         <Tab>Watched</Tab>
-        <Tab>Favorites</Tab>
+        <Tab>Your Favorites</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
