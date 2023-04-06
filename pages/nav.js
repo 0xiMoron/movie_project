@@ -11,7 +11,7 @@ export default function Nav() {
         <Tab>Search</Tab>
         <Tab>WatchList</Tab>
         <Tab>Watched</Tab>
-        <Tab>Your Favorites</Tab>
+        <Tab>Your Reviews</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
