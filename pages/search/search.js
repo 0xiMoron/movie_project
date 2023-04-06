@@ -6,7 +6,6 @@ import {
   Card,
   Heading,
   CardBody,
-  Text,
   Image,
   Alert,
   AlertIcon,
@@ -16,14 +15,24 @@ import {
 import styles from "@/styles/Home.module.css";
 import {
   setLocalStorageVariable,
-  setAndReturnLocalStorageVariable,
+  setLocalStorageArray,
+  setAndReturnLocalStorageArray,
   getLocalStorageVariable,
   deleteLocalStorageVariable,
-} from "@/utils/localStorage";
-import { SearchIcon, AddIcon, CheckIcon } from "@chakra-ui/icons";
+  getLocalStorageArray,
+} from "@/utils/localStorageUtils";
+
+import { SearchIcon, AddIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  SearchedMoviesStorage,
+  SearchedMovieTitleStorage,
+  WatchListedMoviesStorage,
+} from "@/constants/constantVars";
+
+import { findMovieInWatchList } from "@/utils/watchListUtils";
 
 export default function Search() {
   const [title, setTitle] = useState("");
@@ -32,13 +41,15 @@ export default function Search() {
   const [movieResults, setMovieResults] = useState([]);
 
   // Keep the last searched results on hard refreshes
+  /// MAYBE RETHINK HOW YOU ARE DOING THIS
+  /// MAKE A STATE MAP
   useEffect(() => {
-    let searchedMovies = getLocalStorageVariable("searchedMovies");
+    let searchedMovies = getLocalStorageArray(SearchedMoviesStorage);
     if (searchedMovies !== null) {
-      setMovieResults(JSON.parse(searchedMovies));
+      setMovieResults(searchedMovies);
     }
 
-    let searchedMovieTitle = getLocalStorageVariable("searchedMovieTitle");
+    let searchedMovieTitle = getLocalStorageVariable(SearchedMovieTitleStorage);
     if (searchedMovieTitle !== null) {
       setTitle(searchedMovieTitle);
     }
@@ -47,8 +58,8 @@ export default function Search() {
   let clearSearch = () => {
     setMovieResults([]);
     setTitle("");
-    deleteLocalStorageVariable("searchedMovies");
-    deleteLocalStorageVariable("searchedMovieTitle");
+    deleteLocalStorageVariable(SearchedMoviesStorage);
+    deleteLocalStorageVariable(SearchedMovieTitleStorage);
   };
 
   let saveAndDisplaySearchResults = (res) => {
@@ -63,30 +74,53 @@ export default function Search() {
 
     let movieList = [];
     res.data.Search.map((movie, i) => {
-      if (movie.Type === "movie") {
+      let movieInWatchList = findMovieInWatchList(movie);
+      if (movie.Type === "movie" && movieInWatchList === null) {
         movie.Review = 0;
-        movie.Bookmarked = false;
+        movie.WatchListed = false;
         movie.Watched = false;
-        movie.SearchId = i;
 
         movieList.push(movie);
       }
+      if (movieInWatchList !== null) {
+        movieList.push(movieInWatchList);
+      }
     });
-    let searchedMovies = setAndReturnLocalStorageVariable(
-      "searchedMovies",
-      JSON.stringify(movieList)
+    let searchedMovies = setAndReturnLocalStorageArray(
+      SearchedMoviesStorage,
+      movieList
     );
 
-    setLocalStorageVariable("searchedMovieTitle", title);
+    // set storage variables
+    setLocalStorageVariable(SearchedMovieTitleStorage, title);
+    setMovieResults(searchedMovies);
+  };
 
-    setMovieResults(JSON.parse(searchedMovies));
+  let saveMovieToWatchList = (event, movie) => {
+    // set movie to watched and add/make the local storage list
+    movie.WatchListed = true;
+    let watchlist = getLocalStorageArray(WatchListedMoviesStorage);
+    if (watchlist !== null) {
+      watchlist.push(movie);
+      setLocalStorageArray(WatchListedMoviesStorage, watchlist);
+    } else {
+      setLocalStorageArray(WatchListedMoviesStorage, [movie]);
+    }
+
+    // update stored searched Movies
+    setMovieResults(
+      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieResults)
+    );
+
+    // /// DELETE ME
+    // deleteLocalStorageVariable(WatchListedMoviesStorage);
   };
 
   // Ideally I would have started with TypeScript and made this a Movie Interface and...
   /// ...would make this a Movie type Array. But I started in Javascript and felt that...
   //// ... it would be a lot to change last minute...
 
-  let searchMovies = async (event) => {
+  let sendSearchRequest = async (event) => {
     event.preventDefault();
     setErrorOccurred(false);
 
@@ -124,7 +158,7 @@ export default function Search() {
         <form
           className={styles.searchBar}
           method="post"
-          onSubmit={searchMovies}>
+          onSubmit={sendSearchRequest}>
           <Input
             variant="filled"
             placeholder="Search for a movie!"
@@ -140,6 +174,12 @@ export default function Search() {
             aria-label="Search"
             icon={<SearchIcon />}
           />
+          <IconButton
+            className={styles.searchButton}
+            aria-label="Search"
+            icon={<SmallCloseIcon />}
+            onClick={clearSearch}
+          />
         </form>
       </section>
       <section className={styles.searchRes}>
@@ -154,11 +194,21 @@ export default function Search() {
                     {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}
                     <Image src={el.Poster} borderRadius="lg" />
                     <section className={styles.cardFooter}>
-                      <Text>Year: {el.Year}</Text>
-                      {el.Bookmarked ? (
-                        <IconButton icon={<CheckIcon />} />
+                      <section className={styles.cardDesColumn}>
+                        <h1 className={styles.cardDesHead}>Year: </h1>
+                        <h3 className={styles.cardDesText}>{el.Year}</h3>
+                      </section>
+                      {el.WatchListed ? (
+                        <IconButton size="sm" icon={<SmallCloseIcon />} />
                       ) : (
-                        <IconButton icon={<AddIcon />} />
+                        <IconButton
+                          size="sm"
+                          aria-label="add to watchlist"
+                          icon={<AddIcon />}
+                          onClick={(e) => {
+                            saveMovieToWatchList(e, el);
+                          }}
+                        />
                       )}
                     </section>
                   </CardBody>
