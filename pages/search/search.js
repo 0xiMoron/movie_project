@@ -15,13 +15,11 @@ import {
 import styles from "@/styles/Home.module.css";
 import {
   setLocalStorageVariable,
-  setLocalStorageArray,
   setAndReturnLocalStorageArray,
   getLocalStorageVariable,
   deleteLocalStorageVariable,
   getLocalStorageArray,
 } from "@/utils/localStorageUtils";
-
 import { SearchIcon, AddIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -29,16 +27,19 @@ import axios from "axios";
 import {
   SearchedMoviesStorage,
   SearchedMovieTitleStorage,
-  WatchListedMoviesStorage,
 } from "@/constants/constantVars";
-
-import { findMovieInWatchList } from "@/utils/watchListUtils";
+import {
+  findMovieInWatchList,
+  saveMovieToWatchList,
+  deleteMovieFromWatchList,
+} from "@/utils/watchListUtils";
 
 export default function Search() {
   const [title, setTitle] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorOccurred, setErrorOccurred] = useState(false);
+  const [errorOccurred, toggleErrorOccurred] = useState(false);
   const [movieResults, setMovieResults] = useState([]);
+  const [cardAlert, setCardAlert] = useState("");
 
   // Keep the last searched results on hard refreshes
   /// MAYBE RETHINK HOW YOU ARE DOING THIS
@@ -55,6 +56,26 @@ export default function Search() {
     }
   }, []);
 
+  let updateMovieResults = () => {
+    setMovieResults(
+      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieResults)
+    );
+  };
+
+  let displayCardAlert = (event, movie) => {
+    movie.AlertThrown = true;
+    movie.WatchListed
+      ? setCardAlert("Added to WatchList!")
+      : setCardAlert("Removed from WatchList");
+    updateMovieResults();
+
+    // alert Timeout
+    setTimeout(() => {
+      movie.AlertThrown = false;
+      updateMovieResults();
+    }, 1000);
+  };
+
   let clearSearch = () => {
     setMovieResults([]);
     setTitle("");
@@ -66,7 +87,7 @@ export default function Search() {
     /// when a movie is not detected the API does not return an Error, instead it returns...
     //// the response property as a string "False". So I made two seperate error handlers
     if (res.data.Response === "False") {
-      setErrorOccurred(true);
+      toggleErrorOccurred(true);
       setErrorMessage(res.data.Error);
       clearSearch();
       return;
@@ -79,6 +100,7 @@ export default function Search() {
         movie.Review = 0;
         movie.WatchListed = false;
         movie.Watched = false;
+        movie.AlertThrown = false;
 
         movieList.push(movie);
       }
@@ -96,24 +118,20 @@ export default function Search() {
     setMovieResults(searchedMovies);
   };
 
-  let saveMovieToWatchList = (event, movie) => {
-    // set movie to watched and add/make the local storage list
-    movie.WatchListed = true;
-    let watchlist = getLocalStorageArray(WatchListedMoviesStorage);
-    if (watchlist !== null) {
-      watchlist.push(movie);
-      setLocalStorageArray(WatchListedMoviesStorage, watchlist);
-    } else {
-      setLocalStorageArray(WatchListedMoviesStorage, [movie]);
-    }
+  let handleSaveMovieToWatchListEvent = (event, movie) => {
+    // add to watchlist using watchlist utils
+    saveMovieToWatchList(movie);
 
     // update stored searched Movies
-    setMovieResults(
-      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieResults)
-    );
+    updateMovieResults();
+  };
 
-    // /// DELETE ME
-    // deleteLocalStorageVariable(WatchListedMoviesStorage);
+  let handleDeleteFromWatchListEvent = (event, movie) => {
+    // delete from watchlist using watchlist utils
+    deleteMovieFromWatchList(movie);
+
+    // update stored searched Movies
+    updateMovieResults();
   };
 
   // Ideally I would have started with TypeScript and made this a Movie Interface and...
@@ -122,7 +140,7 @@ export default function Search() {
 
   let sendSearchRequest = async (event) => {
     event.preventDefault();
-    setErrorOccurred(false);
+    toggleErrorOccurred(false);
 
     const options = {
       method: "GET",
@@ -140,7 +158,7 @@ export default function Search() {
         saveAndDisplaySearchResults(response);
       })
       .catch(function (error) {
-        setErrorOccurred(true);
+        toggleErrorOccurred(true);
         setErrorMessage(error);
       });
   };
@@ -199,18 +217,32 @@ export default function Search() {
                         <h3 className={styles.cardDesText}>{el.Year}</h3>
                       </section>
                       {el.WatchListed ? (
-                        <IconButton size="sm" icon={<SmallCloseIcon />} />
+                        <IconButton
+                          size="sm"
+                          icon={<SmallCloseIcon />}
+                          onClick={(e) => {
+                            handleDeleteFromWatchListEvent(e, el);
+                            displayCardAlert(e, el);
+                          }}
+                        />
                       ) : (
                         <IconButton
                           size="sm"
                           aria-label="add to watchlist"
                           icon={<AddIcon />}
                           onClick={(e) => {
-                            saveMovieToWatchList(e, el);
+                            handleSaveMovieToWatchListEvent(e, el);
+                            displayCardAlert(e, el);
                           }}
                         />
                       )}
                     </section>
+                    {el.AlertThrown ? (
+                      <Alert status="success">
+                        <AlertIcon />
+                        {cardAlert}
+                      </Alert>
+                    ) : null}
                   </CardBody>
                 </Card>
               );
