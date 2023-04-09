@@ -7,6 +7,7 @@ import Search from "./search/search";
 import WatchList from "./watchList/watchList";
 import MyReviews from "./myReviews/myReviews";
 import {
+  setAndReturnLocalStorageVariable,
   setAndReturnLocalStorageArray,
   getLocalStorageArray,
   getLocalStorageVariable,
@@ -35,17 +36,46 @@ export default function ControlCenter() {
     }
   }, []);
 
-  let updateDisplayedResults = () => {
-    /// MIGHT NEED TO ADD A NULL CHECK
+  let updateSearchedMovieDisplay = () => {
     let searchedMovies = getLocalStorageArray(SearchedMoviesStorage);
-    setSearchResults(
-      setAndReturnLocalStorageArray(SearchedMoviesStorage, searchedMovies)
-    );
+    if (searchedMovies !== null) {
+      setSearchResults(
+        setAndReturnLocalStorageArray(SearchedMoviesStorage, searchedMovies)
+      );
+    } else {
+      setSearchResults(
+        setAndReturnLocalStorageArray(SearchedMoviesStorage, [])
+      );
+    }
 
+    let searchedMovieTitle = getLocalStorageVariable(SearchedMovieTitleStorage);
+    if (searchedMovieTitle !== null) {
+      setTitle(searchedMovieTitle);
+    } else {
+      setTitle(setAndReturnLocalStorageVariable(SearchedMovieTitleStorage, ""));
+    }
+  };
+
+  let updateWatchedListedMovies = () => {
     let watchListedMovies = getLocalStorageArray(WatchListedMoviesStorage);
-    setSavedWatchList(
-      setAndReturnLocalStorageArray(WatchListedMoviesStorage, watchListedMovies)
-    );
+    if (watchListedMovies !== null) {
+      setSavedWatchList(
+        setAndReturnLocalStorageArray(
+          WatchListedMoviesStorage,
+          watchListedMovies
+        )
+      );
+    } else {
+      setSavedWatchList(
+        setAndReturnLocalStorageArray(WatchListedMoviesStorage, [])
+      );
+    }
+  };
+
+  let updateDisplayedResults = () => {
+    /// NEED TO ADD A NULL CHECK?
+    updateSearchedMovieDisplay();
+    updateWatchedListedMovies();
   };
 
   return (
@@ -58,7 +88,7 @@ export default function ControlCenter() {
         <Tab>Search</Tab>
         <Tab>WatchList</Tab>
         <Tab>Watched</Tab>
-        <Tab>Your Reviews</Tab>
+        <Tab>FOR TESTS</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
