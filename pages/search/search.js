@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Input,
   IconButton,
@@ -21,7 +22,6 @@ import {
   getLocalStorageArray,
 } from "@/utils/localStorageUtils";
 import { SearchIcon, AddIcon, SmallCloseIcon } from "@chakra-ui/icons";
-import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -34,32 +34,23 @@ import {
   deleteMovieFromWatchList,
 } from "@/utils/watchListUtils";
 
-export default function Search() {
-  const [title, setTitle] = useState("");
+export default function Search({
+  searchResults,
+  setSearchResults,
+  title,
+  setTitle,
+}) {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorOccurred, toggleErrorOccurred] = useState(false);
-  const [movieResults, setMovieResults] = useState([]);
   const [cardAlert, setCardAlert] = useState("");
 
-  // Keep the last searched results on hard refreshes
-  /// MAYBE RETHINK HOW YOU ARE DOING THIS
-  /// MAKE A STATE MAP
-  useEffect(() => {
+  let updateMovieResults = () => {
     let searchedMovies = getLocalStorageArray(SearchedMoviesStorage);
     if (searchedMovies !== null) {
-      setMovieResults(searchedMovies);
+      setSearchResults(
+        setAndReturnLocalStorageArray(SearchedMoviesStorage, searchResults)
+      );
     }
-
-    let searchedMovieTitle = getLocalStorageVariable(SearchedMovieTitleStorage);
-    if (searchedMovieTitle !== null) {
-      setTitle(searchedMovieTitle);
-    }
-  }, []);
-
-  let updateMovieResults = () => {
-    setMovieResults(
-      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieResults)
-    );
   };
 
   let displayCardAlert = (event, movie) => {
@@ -77,7 +68,7 @@ export default function Search() {
   };
 
   let clearSearch = () => {
-    setMovieResults([]);
+    setSearchResults([]);
     setTitle("");
     deleteLocalStorageVariable(SearchedMoviesStorage);
     deleteLocalStorageVariable(SearchedMovieTitleStorage);
@@ -115,7 +106,7 @@ export default function Search() {
 
     // set storage variables
     setLocalStorageVariable(SearchedMovieTitleStorage, title);
-    setMovieResults(searchedMovies);
+    setSearchResults(searchedMovies);
   };
 
   let handleSaveMovieToWatchListEvent = (event, movie) => {
@@ -201,16 +192,20 @@ export default function Search() {
         </form>
       </section>
       <section className={styles.searchRes}>
-        {movieResults !== []
-          ? movieResults.map((el, i) => {
+        {searchResults !== []
+          ? searchResults.map((el, i) => {
               return (
                 <Card className={styles.card} key={i}>
                   <CardBody className={styles.cardBody}>
-                    <Heading className={styles.cardTitle} size="lg">
+                    <Heading className={styles.cardTitle} size="md">
                       {el.Title}
                     </Heading>
                     {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}
-                    <Image src={el.Poster} borderRadius="lg" />
+                    <Image
+                      className={styles.poster}
+                      src={el.Poster}
+                      borderRadius="lg"
+                    />
                     <section className={styles.cardFooter}>
                       <section className={styles.cardDesColumn}>
                         <h1 className={styles.cardDesHead}>Year: </h1>
@@ -240,7 +235,9 @@ export default function Search() {
                     {el.AlertThrown ? (
                       <Alert status="success">
                         <AlertIcon />
-                        {cardAlert}
+                        <AlertDescription maxWidth="sm">
+                          {cardAlert}
+                        </AlertDescription>
                       </Alert>
                     ) : null}
                   </CardBody>

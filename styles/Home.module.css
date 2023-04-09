@@ -51,10 +51,15 @@
   margin: 1rem;
   display: flex;
   justify-content: center;
-  max-width: 35%;
-  max-height: 40%;
+  max-width: 28%;
+  height: 3%;
+  min-width: 10rem !important;
+  min-height: 20rem;
 }
 
+.poster{
+  max-height: 50%;
+}
 .cardTitle{
   margin-bottom: 1rem;
 }
@@ -73,4 +78,12 @@
   width: 90%;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.watchListControlCenter{
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  justify-content: space-around;
+
 }
