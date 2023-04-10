@@ -6,23 +6,27 @@ import styles from "@/styles/Home.module.css";
 import Search from "./search/search";
 import WatchList from "./watchList/watchList";
 import MyReviews from "./myReviews/myReviews";
+import Watched from "./watched/watched";
 import {
   setAndReturnLocalStorageVariable,
   setAndReturnLocalStorageArray,
   getLocalStorageArray,
   getLocalStorageVariable,
+  setLocalStorageArray,
 } from "@/utils/localStorageUtils";
 
 import {
   SearchedMoviesStorage,
   SearchedMovieTitleStorage,
   WatchListedMoviesStorage,
+  WatchedMoviesStorage,
 } from "@/constants/constantVars";
 
 export default function ControlCenter() {
   const [searchResults, setSearchResults] = useState([]);
   const [title, setTitle] = useState("");
   const [savedWatchList, setSavedWatchList] = useState([]);
+  const [watchedMovies, setWatchedMovies] = useState([]);
 
   useEffect(() => {
     /// REMEMBER AND TRIPLE CHECK FOR THE UNDEFINED ERROR
@@ -37,16 +41,7 @@ export default function ControlCenter() {
   }, []);
 
   let updateSearchedMovieDisplay = () => {
-    let searchedMovies = getLocalStorageArray(SearchedMoviesStorage);
-    if (searchedMovies !== null) {
-      setSearchResults(
-        setAndReturnLocalStorageArray(SearchedMoviesStorage, searchedMovies)
-      );
-    } else {
-      setSearchResults(
-        setAndReturnLocalStorageArray(SearchedMoviesStorage, [])
-      );
-    }
+    setSearchResults(getLocalStorageArray(SearchedMoviesStorage));
 
     let searchedMovieTitle = getLocalStorageVariable(SearchedMovieTitleStorage);
     if (searchedMovieTitle !== null) {
@@ -56,26 +51,19 @@ export default function ControlCenter() {
     }
   };
 
-  let updateWatchedListedMovies = () => {
-    let watchListedMovies = getLocalStorageArray(WatchListedMoviesStorage);
-    if (watchListedMovies !== null) {
-      setSavedWatchList(
-        setAndReturnLocalStorageArray(
-          WatchListedMoviesStorage,
-          watchListedMovies
-        )
-      );
-    } else {
-      setSavedWatchList(
-        setAndReturnLocalStorageArray(WatchListedMoviesStorage, [])
-      );
-    }
+  let updateWatchListedMovies = () => {
+    setSavedWatchList(getLocalStorageArray(WatchListedMoviesStorage));
+  };
+
+  let updateWatchedMovies = () => {
+    setWatchedMovies(getLocalStorageArray(WatchedMoviesStorage));
   };
 
   let updateDisplayedResults = () => {
     /// NEED TO ADD A NULL CHECK?
     updateSearchedMovieDisplay();
-    updateWatchedListedMovies();
+    updateWatchListedMovies();
+    updateWatchedMovies();
   };
 
   return (
@@ -105,7 +93,12 @@ export default function ControlCenter() {
             setSavedWatchList={setSavedWatchList}
           />
         </TabPanel>
-        <TabPanel>c</TabPanel>
+        <TabPanel>
+          <Watched
+            watchedMovies={watchedMovies}
+            setWatchedMovies={setWatchedMovies}
+          />
+        </TabPanel>
         <TabPanel>
           <MyReviews
             searchResults={searchResults}

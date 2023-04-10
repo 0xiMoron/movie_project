@@ -34,6 +34,8 @@ import {
   deleteMovieFromWatchList,
 } from "@/utils/watchListUtils";
 
+import { toggleSearchedMoviesWatchListing } from "@/utils/searchResultsUtils";
+
 export default function Search({
   searchResults,
   setSearchResults,
@@ -45,24 +47,23 @@ export default function Search({
   const [cardAlert, setCardAlert] = useState("");
 
   let updateMovieResults = () => {
-    let searchedMovies = getLocalStorageArray(SearchedMoviesStorage);
-    if (searchedMovies !== null) {
-      setSearchResults(
-        setAndReturnLocalStorageArray(SearchedMoviesStorage, searchResults)
-      );
-    }
+    setSearchResults(getLocalStorageArray(SearchedMoviesStorage));
   };
 
-  let displayCardAlert = (event, movie) => {
+  let updateSearchedMoviesLocalVariable = (movieList) => {
+    setSearchResults(
+      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieList)
+    );
+  };
+
+  let displayCardAlert = (movie) => {
     movie.AlertThrown = true;
     movie.WatchListed
       ? setCardAlert("Added to WatchList!")
       : setCardAlert("Removed from WatchList");
-    updateMovieResults();
 
     // alert Timeout
     setTimeout(() => {
-      movie.AlertThrown = false;
       updateMovieResults();
     }, 1000);
   };
@@ -109,20 +110,17 @@ export default function Search({
     setSearchResults(searchedMovies);
   };
 
-  let handleSaveMovieToWatchListEvent = (event, movie) => {
+  let handleToggleWatchListEvent = async (event, movie) => {
+    // update the displayed movie card
+    toggleSearchedMoviesWatchListing(movie);
+
     // add to watchlist using watchlist utils
-    saveMovieToWatchList(movie);
+    movie.WatchListed
+      ? deleteMovieFromWatchList(movie)
+      : saveMovieToWatchList(movie);
 
-    // update stored searched Movies
-    updateMovieResults();
-  };
-
-  let handleDeleteFromWatchListEvent = (event, movie) => {
-    // delete from watchlist using watchlist utils
-    deleteMovieFromWatchList(movie);
-
-    // update stored searched Movies
-    updateMovieResults();
+    // display alert and update stored searched Movies
+    await displayCardAlert(movie);
   };
 
   // Ideally I would have started with TypeScript and made this a Movie Interface and...
@@ -192,7 +190,7 @@ export default function Search({
         </form>
       </section>
       <section className={styles.searchRes}>
-        {searchResults !== []
+        {searchResults !== [] && searchResults !== null
           ? searchResults.map((el, i) => {
               return (
                 <Card className={styles.card} key={i}>
@@ -216,8 +214,7 @@ export default function Search({
                           size="sm"
                           icon={<SmallCloseIcon />}
                           onClick={(e) => {
-                            handleDeleteFromWatchListEvent(e, el);
-                            displayCardAlert(e, el);
+                            handleToggleWatchListEvent(e, el);
                           }}
                         />
                       ) : (
@@ -226,8 +223,7 @@ export default function Search({
                           aria-label="add to watchlist"
                           icon={<AddIcon />}
                           onClick={(e) => {
-                            handleSaveMovieToWatchListEvent(e, el);
-                            displayCardAlert(e, el);
+                            handleToggleWatchListEvent(e, el);
                           }}
                         />
                       )}
