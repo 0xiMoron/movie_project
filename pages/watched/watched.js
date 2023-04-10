@@ -1,34 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  IconButton,
-  Card,
-  Heading,
-  CardBody,
-  Image,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from "@chakra-ui/react";
+import { IconButton, Card, Heading, CardBody, Image } from "@chakra-ui/react";
 import styles from "@/styles/Home.module.css";
+import { getLocalStorageArray } from "@/utils/localStorageUtils";
+import { WatchedMoviesStorage } from "@/constants/constantVars";
+import { toggleWatchListMoviesWatchedStatus } from "@/utils/watchListUtils";
+import { StarIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
-  deleteLocalStorageVariable,
-  getLocalStorageArray,
-  setAndReturnLocalStorageArray,
-  setLocalStorageArray,
-} from "@/utils/localStorageUtils";
-import {
-  WatchListedMoviesStorage,
-  WatchedMoviesStorage,
-} from "@/constants/constantVars";
-import {
-  deleteMovieFromWatchList,
-  toggleWatchListMoviesWatchedStatus,
-} from "@/utils/watchListUtils";
-import { ViewIcon, SmallCloseIcon, ViewOffIcon } from "@chakra-ui/icons";
-import {
-  saveMovieToWatched,
   deleteMovieFromWatched,
+  updateMovieReview,
 } from "@/utils/watchedUtils";
 
 export default function Watched({ watchedMovies, setWatchedMovies }) {
@@ -39,6 +18,11 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
   let handleDeleteFromWatchedEvent = (event, movie) => {
     deleteMovieFromWatched(movie);
     toggleWatchListMoviesWatchedStatus(movie);
+    setWatchedMovies(getLocalStorageArray(WatchedMoviesStorage));
+  };
+
+  let handleUpdateMovieReviewEvent = (event, movie, reviewScore) => {
+    updateMovieReview(movie, reviewScore);
     setWatchedMovies(getLocalStorageArray(WatchedMoviesStorage));
   };
 
@@ -69,6 +53,48 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
                       icon={<SmallCloseIcon />}
                       onClick={(e) => {
                         handleDeleteFromWatchedEvent(e, el);
+                      }}
+                    />
+                  </section>
+                  <section>
+                    <IconButton
+                      size="xsm"
+                      icon={<StarIcon />}
+                      className={el.Review >= 1 ? styles.selectedStar : ""}
+                      onClick={(e) => {
+                        handleUpdateMovieReviewEvent(e, el, 1);
+                      }}
+                    />
+                    <IconButton
+                      size="xsm"
+                      icon={<StarIcon />}
+                      className={el.Review >= 2 ? styles.selectedStar : ""}
+                      onClick={(e) => {
+                        handleUpdateMovieReviewEvent(e, el, 2);
+                      }}
+                    />
+                    <IconButton
+                      size="xsm"
+                      icon={<StarIcon />}
+                      className={el.Review >= 3 ? styles.selectedStar : ""}
+                      onClick={(e) => {
+                        handleUpdateMovieReviewEvent(e, el, 3);
+                      }}
+                    />
+                    <IconButton
+                      size="xsm"
+                      icon={<StarIcon />}
+                      className={el.Review >= 4 ? styles.selectedStar : ""}
+                      onClick={(e) => {
+                        handleUpdateMovieReviewEvent(e, el, 4);
+                      }}
+                    />
+                    <IconButton
+                      size="xsm"
+                      icon={<StarIcon />}
+                      className={el.Review === 5 ? styles.selectedStar : ""}
+                      onClick={(e) => {
+                        handleUpdateMovieReviewEvent(e, el, 5);
                       }}
                     />
                   </section>
