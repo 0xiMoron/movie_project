@@ -1,6 +1,7 @@
 import {
   getLocalStorageArray,
   setLocalStorageArray,
+  deleteLocalStorageVariable,
 } from "@/utils/localStorageUtils";
 import { WatchListedMoviesStorage } from "@/constants/constantVars";
 
@@ -21,14 +22,28 @@ export function findMovieInWatchList(movie) {
   return foundMovie;
 }
 
+export function toggleWatchListMoviesWatchedStatus(movie) {
+  let watchList = getLocalStorageArray(WatchListedMoviesStorage);
+  if (watchList === null) {
+    return null;
+  }
+  watchList.map((wlMovie, i) => {
+    if (wlMovie.imdbID === movie.imdbID) {
+      wlMovie.Watched ? (wlMovie.Watched = false) : (wlMovie.Watched = true);
+    }
+  });
+
+  setLocalStorageArray(WatchListedMoviesStorage, watchList);
+}
+
 export function saveMovieToWatchList(movie) {
   // set movie to watched and add/make the local storage list
   movie.WatchListed = true;
-  let watchlist = getLocalStorageArray(WatchListedMoviesStorage);
+  let watchList = getLocalStorageArray(WatchListedMoviesStorage);
   // Check if there is already a watchlist and update accordingly
-  if (watchlist !== null) {
-    watchlist.push(movie);
-    setLocalStorageArray(WatchListedMoviesStorage, watchlist);
+  if (watchList !== null) {
+    watchList.push(movie);
+    setLocalStorageArray(WatchListedMoviesStorage, watchList);
   } else {
     setLocalStorageArray(WatchListedMoviesStorage, [movie]);
   }
@@ -41,6 +56,12 @@ export function deleteMovieFromWatchList(movie) {
   let watchList = getLocalStorageArray(WatchListedMoviesStorage);
   if (watchList === null) {
     return null;
+  }
+
+  // if the watchList only has one movie delete the var
+  if (watchList.length === 1) {
+    deleteLocalStorageVariable(WatchListedMoviesStorage);
+    return;
   }
 
   // remove the passed movie

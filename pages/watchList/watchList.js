@@ -1,22 +1,37 @@
 "use client";
 
-import React from "react";
-import { useEffect } from "react";
-import { IconButton, Card, Heading, CardBody, Image } from "@chakra-ui/react";
+import React, { useState } from "react";
+import {
+  IconButton,
+  Card,
+  Heading,
+  CardBody,
+  Image,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
 import styles from "@/styles/Home.module.css";
 import {
   deleteLocalStorageVariable,
   getLocalStorageArray,
+  setAndReturnLocalStorageArray,
 } from "@/utils/localStorageUtils";
 import { WatchListedMoviesStorage } from "@/constants/constantVars";
-import { deleteMovieFromWatchList } from "@/utils/watchListUtils";
-import { ViewIcon, SmallCloseIcon, StarIcon } from "@chakra-ui/icons";
-import { setSearchResultMoviesWatchListStatusToFalse } from "@/utils/searchResultsUtils";
+import {
+  deleteMovieFromWatchList,
+  toggleWatchListMoviesWatchedStatus,
+} from "@/utils/watchListUtils";
+import { ViewIcon, SmallCloseIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { toggleSearchedMoviesWatchListing } from "@/utils/searchResultsUtils";
+import {
+  saveMovieToWatched,
+  deleteMovieFromWatched,
+} from "@/utils/watchedUtils";
 
 export default function WatchList({ savedWatchList, setSavedWatchList }) {
-  useEffect(() => {
-    updateWatchList();
-  }, []);
+  const [cardAlert, setCardAlert] = useState("");
 
   let updateWatchList = () => {
     // update displayed watchlist with locally stored variable
@@ -29,20 +44,42 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
 
     // update displayed watchlist
     updateWatchList();
-    setSearchResultMoviesWatchListStatusToFalse(movie);
+    toggleSearchedMoviesWatchListing(movie);
+  };
+
+  let handleToggleWatchedEvent = async (event, movie) => {
+    await displayCardAlert(movie);
+    toggleWatchListMoviesWatchedStatus(movie);
+
+    movie.Watched ? deleteMovieFromWatched(movie) : saveMovieToWatched(movie);
   };
 
   let clearWatchList = () => {
+    if (savedWatchList === [] || savedWatchList === null) return;
     // delete the stored watchlist
     deleteLocalStorageVariable(WatchListedMoviesStorage);
 
     // delete each movie from watchlist from Searched results
     savedWatchList.map((movie, i) => {
-      setSearchResultMoviesWatchListStatusToFalse(movie);
+      toggleSearchedMoviesWatchListing(movie);
     });
 
     // update displayed watchlist
     updateWatchList();
+  };
+
+  let displayCardAlert = (movie) => {
+    movie.AlertThrown = true;
+    console.log(movie);
+
+    !movie.Watched
+      ? setCardAlert("Added to Watched!")
+      : setCardAlert("Removed from Watched...");
+
+    // alert Timeout
+    setTimeout(() => {
+      updateWatchList();
+    }, 1000);
   };
 
   return (
@@ -81,7 +118,32 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
                         handleDeleteFromWatchListEvent(e, el);
                       }}
                     />
+                    {!el.Watched ? (
+                      <IconButton
+                        size="sm"
+                        icon={<ViewIcon />}
+                        onClick={(e) => {
+                          handleToggleWatchedEvent(e, el);
+                        }}
+                      />
+                    ) : (
+                      <IconButton
+                        size="sm"
+                        icon={<ViewOffIcon />}
+                        onClick={(e) => {
+                          handleToggleWatchedEvent(e, el);
+                        }}
+                      />
+                    )}
                   </section>
+                  {el.AlertThrown ? (
+                    <Alert status="success">
+                      <AlertIcon />
+                      <AlertDescription maxWidth="sm">
+                        {cardAlert}
+                      </AlertDescription>
+                    </Alert>
+                  ) : null}
                 </CardBody>
               </Card>
             );
