@@ -2,17 +2,13 @@
 
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import styles from "@/styles/Home.module.css";
 import Search from "./search/search";
 import WatchList from "./watchList/watchList";
-import MyReviews from "./myReviews/myReviews";
 import Watched from "./watched/watched";
 import {
   setAndReturnLocalStorageVariable,
-  setAndReturnLocalStorageArray,
   getLocalStorageArray,
   getLocalStorageVariable,
-  setLocalStorageArray,
 } from "@/utils/localStorageUtils";
 
 import {
@@ -97,12 +93,6 @@ export default function ControlCenter() {
           <Watched
             watchedMovies={watchedMovies}
             setWatchedMovies={setWatchedMovies}
-          />
-        </TabPanel>
-        <TabPanel>
-          <MyReviews
-            searchResults={searchResults}
-            setSearchResults={setSearchResults}
           />
         </TabPanel>
       </TabPanels>
