@@ -87,3 +87,8 @@
   justify-content: space-around;
 
 }
+
+.selectedStar{
+  background: none;
+  color: #ffc40c;
+}
