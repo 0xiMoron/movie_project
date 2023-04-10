@@ -47,3 +47,18 @@ export function updateMovieReview(movie, pointScore) {
 
   setLocalStorageArray(WatchedMoviesStorage, watchedMovies);
 }
+
+export function findWatchedMovie(movie) {
+  let watchedMovies = getLocalStorageArray(WatchedMoviesStorage);
+  if (watchedMovies === null) {
+    return null;
+  }
+
+  let foundMovie = null;
+  watchedMovies.map((wMovie, i) => {
+    if (wMovie.imdbID === movie.imdbID) {
+      foundMovie = wMovie;
+    }
+  });
+  return foundMovie;
+}

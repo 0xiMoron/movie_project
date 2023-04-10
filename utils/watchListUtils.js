@@ -4,6 +4,7 @@ import {
   deleteLocalStorageVariable,
 } from "@/utils/localStorageUtils";
 import { WatchListedMoviesStorage } from "@/constants/constantVars";
+import { findWatchedMovie } from "./watchedUtils";
 
 export function findMovieInWatchList(movie) {
   // check if there is a watchlist
@@ -40,6 +41,12 @@ export function saveMovieToWatchList(movie) {
   // set movie to watched and add/make the local storage list
   movie.WatchListed = true;
   let watchList = getLocalStorageArray(WatchListedMoviesStorage);
+
+  let copyOfMovieAlreadyWatched = findWatchedMovie(movie);
+  if (copyOfMovieAlreadyWatched !== null) {
+    movie.Watched = true;
+  }
+
   // Check if there is already a watchlist and update accordingly
   if (watchList !== null) {
     watchList.push(movie);
