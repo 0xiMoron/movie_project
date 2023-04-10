@@ -32,3 +32,18 @@ export function deleteMovieFromWatched(movie) {
 
   setLocalStorageArray(WatchedMoviesStorage, watchedMovies);
 }
+
+export function updateMovieReview(movie, pointScore) {
+  let watchedMovies = getLocalStorageArray(WatchedMoviesStorage);
+  if (watchedMovies === null) {
+    return null;
+  }
+
+  watchedMovies.map((wMovie, i) => {
+    if (wMovie.imdbID === movie.imdbID) {
+      wMovie.Review = pointScore;
+    }
+  });
+
+  setLocalStorageArray(WatchedMoviesStorage, watchedMovies);
+}
