@@ -33,7 +33,7 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
               <Card className={styles.card} key={i}>
                 <CardBody className={styles.cardBody}>
                   <Heading
-                    className={styles.cardTitle}
+                    marginBottom="1rem"
                     overflow="hidden"
                     textOverflow="ellipsis"
                     width="90%"

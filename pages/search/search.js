@@ -203,12 +203,12 @@ export default function Search({
                 <Card className={styles.card} key={i}>
                   <CardBody className={styles.cardBody}>
                     <Heading
-                      className={styles.cardTitle}
                       overflow="hidden"
                       textOverflow="ellipsis"
                       width="90%"
                       whiteSpace="nowrap"
-                      fontSize="1.2rem">
+                      fontSize="1.2rem"
+                      marginBottom="1rem">
                       {el.Title}
                     </Heading>
                     <Image
