@@ -72,7 +72,6 @@ export default function ControlCenter() {
         <Tab>Search</Tab>
         <Tab>WatchList</Tab>
         <Tab>Watched</Tab>
-        <Tab>FOR TESTS</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
