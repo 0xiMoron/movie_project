@@ -4,6 +4,8 @@ const searchForMovies = async (title) => {
     headers: {
       "X-RapidAPI-Key": process.env.API_KEY,
       "X-RapidAPI-Host": "movie-database-alternative.p.rapidapi.com",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
     },
   };
 
