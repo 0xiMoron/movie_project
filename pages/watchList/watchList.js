@@ -56,6 +56,8 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
 
     // update displayed watchlist
     updateWatchList();
+
+    // Toggle the watch listed status on saved searched movies
     toggleSearchedMoviesWatchListing(movie);
   };
 

@@ -63,40 +63,6 @@ export default function Search({
     deleteLocalStorageVariable(SearchedMovieTitleStorage);
   };
 
-  let saveAndDisplaySearchResults = (res) => {
-    /// when a movie is not detected the API does not return an Error, instead it returns...
-    //// the response property as a string "False". So I made two seperate error handlers
-    if (res.Response === "False") {
-      toggleErrorOccurred(true);
-      setErrorMessage(res.Error);
-      clearSearch();
-      return;
-    }
-
-    let movieList = [];
-    res.map((movie, i) => {
-      let movieInWatchList = findMovieInWatchList(movie);
-      if (movie.Type === "movie" && movieInWatchList === null) {
-        movie.Review = 0;
-        movie.WatchListed = false;
-        movie.Watched = false;
-
-        movieList.push(movie);
-      }
-      if (movieInWatchList !== null) {
-        movieList.push(movieInWatchList);
-      }
-    });
-    let searchedMovies = setAndReturnLocalStorageArray(
-      SearchedMoviesStorage,
-      movieList
-    );
-
-    // set storage variables
-    setLocalStorageVariable(SearchedMovieTitleStorage, title);
-    setSearchResults(searchedMovies);
-  };
-
   let handleToggleWatchListEvent = async (event, movie) => {
     // update the displayed movie card
     toggleSearchedMoviesWatchListing(movie);
@@ -114,10 +80,49 @@ export default function Search({
   /// ...would make this a Movie type Array. But I started in Javascript and felt that...
   //// ... it would be a lot to change last minute...
 
+  let saveAndDisplaySearchResults = (res) => {
+    /// when a movie is not detected the API does not return an Error, instead it returns...
+    //// the response property as a string "False". So I made two seperate error handlers
+    if (res.Response === "False") {
+      toggleErrorOccurred(true);
+      setErrorMessage(res.Error);
+      clearSearch();
+      return;
+    }
+
+    let movieList = [];
+    res.map((movie, i) => {
+      // this is to check the MovieListed movies status just to keep the data consistent
+      let movieInWatchList = findMovieInWatchList(movie);
+      if (movie.Type === "movie" && movieInWatchList === null) {
+        movie.Review = 0;
+        movie.WatchListed = false;
+        movie.Watched = false;
+
+        movieList.push(movie);
+      }
+      if (movieInWatchList !== null) {
+        movieList.push(movieInWatchList);
+      }
+    });
+    // set the local storage array so we can keep the results on refresh
+    let searchedMovies = setAndReturnLocalStorageArray(
+      SearchedMoviesStorage,
+      movieList
+    );
+
+    // set storage variables
+    setLocalStorageVariable(SearchedMovieTitleStorage, title);
+    setSearchResults(searchedMovies);
+  };
+
   let sendSearchRequest = async (event) => {
+    // This is to prevent the refresh and routing to the called api
     event.preventDefault();
+    // If there is a displayed error this will shut it off
     toggleErrorOccurred(false);
 
+    // setting the request to post made it really easy to pass the title as a body
     const requestRes = await fetch("api/searchMovies", {
       method: "POST",
       body: title,
