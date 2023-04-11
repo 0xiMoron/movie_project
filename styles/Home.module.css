@@ -1,4 +1,4 @@
-@media (min-width: 900px) {
+@media (max-width: 900px) {
   .card{
     margin: 1rem;
     display: flex;
