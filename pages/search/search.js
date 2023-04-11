@@ -207,7 +207,7 @@ export default function Search({
                       textOverflow="ellipsis"
                       width="90%"
                       whiteSpace="nowrap"
-                      fontSize="1rem"
+                      fontSize="95%"
                       marginBottom="1rem">
                       {el.Title}
                     </Heading>

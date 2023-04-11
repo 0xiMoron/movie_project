@@ -1,11 +1,3 @@
-@media screen and (min-width: 700px) {
-  .poster{
-    height: 40%;
-    width: 90%;
-  }
-}
-
-
 .main {
   display: flex;
   flex-direction: column;
@@ -62,7 +54,7 @@
   margin: 1rem;
   display: flex;
   justify-content: center;
-  width: 30% !important;
+  width: 32% !important;
 }
 
 .poster{
