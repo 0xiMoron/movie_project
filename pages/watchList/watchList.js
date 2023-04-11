@@ -99,7 +99,9 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
         />
       </section>
       <section className={styles.searchRes}>
-        {savedWatchList !== [] && savedWatchList !== null ? (
+        {savedWatchList !== [] &&
+        savedWatchList !== null &&
+        typeof watchedMovies !== "undefined" ? (
           savedWatchList.map((el, i) => {
             return (
               <Card className={styles.card} key={i}>

@@ -29,7 +29,9 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
   return (
     <>
       <section className={styles.searchRes}>
-        {watchedMovies !== [] && watchedMovies !== null ? (
+        {watchedMovies !== [] &&
+        watchedMovies !== null &&
+        typeof watchedMovies !== "undefined" ? (
           watchedMovies.map((el, i) => {
             return (
               <Card className={styles.card} key={i}>
