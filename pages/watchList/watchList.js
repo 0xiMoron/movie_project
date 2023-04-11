@@ -31,7 +31,21 @@ import {
 } from "@/utils/watchedUtils";
 
 export default function WatchList({ savedWatchList, setSavedWatchList }) {
+  const [alertThrown, toggleAlert] = useState(false);
   const [cardAlert, setCardAlert] = useState("");
+
+  let displayCardAlert = (movie) => {
+    toggleAlert(true);
+
+    !movie.Watched
+      ? setCardAlert("Added to Watched!")
+      : setCardAlert("Removed from Watched...");
+
+    // alert Timeout
+    setTimeout(() => {
+      toggleAlert(false);
+    }, 2000);
+  };
 
   let updateWatchList = () => {
     // update displayed watchlist with locally stored variable
@@ -68,23 +82,16 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
     updateWatchList();
   };
 
-  let displayCardAlert = (movie) => {
-    movie.AlertThrown = true;
-    console.log(movie);
-
-    !movie.Watched
-      ? setCardAlert("Added to Watched!")
-      : setCardAlert("Removed from Watched...");
-
-    // alert Timeout
-    setTimeout(() => {
-      updateWatchList();
-    }, 1000);
-  };
-
   return (
     <>
+      {alertThrown ? (
+        <Alert status="success">
+          <AlertIcon />
+          <AlertDescription maxWidth="sm">{cardAlert}</AlertDescription>
+        </Alert>
+      ) : null}
       <section className={styles.watchListControlCenter}>
+        <h1 className={styles.clearTitle}>Clear WatchList: </h1>
         <IconButton
           size="md"
           icon={<SmallCloseIcon />}
@@ -136,14 +143,6 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
                       />
                     )}
                   </section>
-                  {el.AlertThrown ? (
-                    <Alert status="success">
-                      <AlertIcon />
-                      <AlertDescription maxWidth="sm">
-                        {cardAlert}
-                      </AlertDescription>
-                    </Alert>
-                  ) : null}
                 </CardBody>
               </Card>
             );

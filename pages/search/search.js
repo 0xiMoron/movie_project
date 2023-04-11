@@ -43,28 +43,23 @@ export default function Search({
 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorOccurred, toggleErrorOccurred] = useState(false);
+  const [alertThrown, toggleAlert] = useState(false);
   const [cardAlert, setCardAlert] = useState("");
 
   let updateMovieResults = () => {
     setSearchResults(getLocalStorageArray(SearchedMoviesStorage));
   };
 
-  let updateSearchedMoviesLocalVariable = (movieList) => {
-    setSearchResults(
-      setAndReturnLocalStorageArray(SearchedMoviesStorage, movieList)
-    );
-  };
-
   let displayCardAlert = (movie) => {
-    movie.AlertThrown = true;
+    toggleAlert(true);
     movie.WatchListed
       ? setCardAlert("Added to WatchList!")
       : setCardAlert("Removed from WatchList");
 
     // alert Timeout
     setTimeout(() => {
-      updateMovieResults();
-    }, 1000);
+      toggleAlert(false);
+    }, 2000);
   };
 
   let clearSearch = () => {
@@ -91,7 +86,6 @@ export default function Search({
         movie.Review = 0;
         movie.WatchListed = false;
         movie.Watched = false;
-        movie.AlertThrown = false;
 
         movieList.push(movie);
       }
@@ -175,6 +169,12 @@ export default function Search({
           />
         </form>
       </section>
+      {alertThrown ? (
+        <Alert status="success">
+          <AlertIcon />
+          <AlertDescription maxWidth="sm">{cardAlert}</AlertDescription>
+        </Alert>
+      ) : null}
       <section className={styles.searchRes}>
         {searchResults !== [] && searchResults !== null
           ? searchResults.map((el, i) => {
@@ -214,14 +214,6 @@ export default function Search({
                         />
                       )}
                     </section>
-                    {el.AlertThrown ? (
-                      <Alert status="success">
-                        <AlertIcon />
-                        <AlertDescription maxWidth="sm">
-                          {cardAlert}
-                        </AlertDescription>
-                      </Alert>
-                    ) : null}
                   </CardBody>
                 </Card>
               );
