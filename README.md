@@ -1,6 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## What my general goals were
 
-## Getting Started
+I wanted to make a simple SPA app where I could interchangably switch "Tabs" by just updating the DOM and keeping everything pretty light
+
+I also broke down a lot of the business logic into Util files and let the components only hold functions that are event handlers for buttons and alerts to make the code as readable as possible
+
+## What I wish I could have done differently
+
+1. Currently, I regret not starting in TypeScript and making strict models for specific types of data
+   I wanted to make a Movie model and have everything that would change that movies state (ex: the check if the movie had been watched or not yet) in function inside the model itself and easily calling them when needed
+
+The only reason I didnt change to TypeScript is that I had initially intended to test the API in JavaScript and switch but as I moved deeper and deeper into the logic it seemed easier to just continue in JS rather than switch it up all of a sudden
+
+2. I think I will eventually do this, but I feel that my app is kinda half react half nothing and I want to bring it together in a better package
+
+Is it using React in all the pages? sure, but there are a lot of features and designs that I could use from react that would make life a lot easier that I just havent implemented yet
+
+3. At the moment I only have one giant Style file. This isnt typically how I make my apps, but I kept adding to it out of convenience... I will split it up as I continue to fix the project
+
+## Future features I want to bring to the table
+
+- I want to fix the alert so that it shows up under the pressed card
+- Filters on each page to display the data by Alpabetical order, Review, etc
+- A share button! (Maybe use public apis like Discord or Twitter)
+- Themes! Like dark mode or light
+- Add TV Search options!
+
+## Running the app!
 
 First, run the development server:
 
@@ -13,26 +38,3 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
