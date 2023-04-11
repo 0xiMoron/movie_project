@@ -38,7 +38,7 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
                     textOverflow="ellipsis"
                     width="90%"
                     whiteSpace="nowrap"
-                    fontSize="95%">
+                    fontSize="90%">
                     {el.Title}
                   </Heading>
                   <Image

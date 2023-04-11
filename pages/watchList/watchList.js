@@ -112,7 +112,7 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
                     textOverflow="ellipsis"
                     width="90%"
                     whiteSpace="nowrap"
-                    fontSize="95%">
+                    fontSize="90%">
                     {el.Title}
                   </Heading>
                   <Image
