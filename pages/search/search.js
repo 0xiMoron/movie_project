@@ -178,7 +178,7 @@ export default function Search({
       <section className={styles.searchRes}>
         {searchResults !== [] &&
         searchResults !== null &&
-        typeof watchedMovies !== "undefined"
+        typeof searchResults !== "undefined"
           ? searchResults.map((el, i) => {
               return (
                 <Card className={styles.card} key={i}>
