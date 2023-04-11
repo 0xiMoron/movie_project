@@ -41,11 +41,11 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
                     fontSize="1.2rem">
                     {el.Title}
                   </Heading>
-                  {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}
                   <Image
                     className={styles.poster}
                     src={el.Poster}
                     borderRadius="lg"
+                    fallbackSrc="https://via.placeholder.com/150"
                   />
                   <section className={styles.cardFooter}>
                     <section className={styles.cardDesColumn}>
