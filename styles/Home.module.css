@@ -1,3 +1,13 @@
+@media (min-width: 900px) {
+  .card{
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+    width: 40% !important;
+  }
+}
+
+
 .main {
   display: flex;
   flex-direction: column;
@@ -54,8 +64,9 @@
   margin: 1rem;
   display: flex;
   justify-content: center;
-  width: 35% !important;
+  width: 25% !important;
 }
+
 
 .poster{
   height: 20%;
