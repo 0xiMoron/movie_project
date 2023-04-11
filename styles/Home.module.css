@@ -56,13 +56,15 @@
   justify-content: center;
   max-width: 22%;
   height: 3%;
-  min-width: 10rem !important;
-  min-height: 20rem;
+  min-width: 20% !important;
+  min-height: 40%;
+
 }
 
 .poster{
   height: 40%;
 }
+
 .cardTitle{
   margin-bottom: 1rem;
 }
