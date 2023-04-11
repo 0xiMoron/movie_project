@@ -191,7 +191,7 @@ export default function Search({
           thickness="4px"
           size="xl"
           marginTop="15vh"
-          marginLeft="45vw"
+          marginLeft="40vw"
         />
       ) : null}
       <section className={styles.cardDisplay}>
