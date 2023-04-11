@@ -54,10 +54,9 @@
   margin: 1rem;
   display: flex;
   justify-content: center;
-  max-width: 22%;
   height: 3%;
-  min-width: 20% !important;
-  min-height: 40%;
+  width: 20% !important;
+  height: 20%;
 
 }
 
