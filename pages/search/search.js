@@ -93,7 +93,7 @@ export default function Search({
     }
 
     let movieList = [];
-    res.map((movie, i) => {
+    res.Search.map((movie, i) => {
       // this is to check the MovieListed movies status just to keep the data consistent
       let movieInWatchList = findMovieInWatchList(movie);
       if (movie.Type === "movie" && movieInWatchList === null) {
