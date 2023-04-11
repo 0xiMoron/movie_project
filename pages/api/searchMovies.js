@@ -19,6 +19,6 @@ const searchForMovies = async (title) => {
 
 export default async function handler(req, res) {
   const movieResults = await searchForMovies(req.body);
-  if (movieResults.Response === "False") res.status(500).send(movieResults);
+  if (movieResults.Response === "False") res.status(200).send(movieResults);
   res.status(200).json(movieResults.Search);
 }
