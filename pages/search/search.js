@@ -23,7 +23,6 @@ import {
 } from "@/utils/localStorageUtils";
 import { SearchIcon, AddIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import {
   SearchedMoviesStorage,
   SearchedMovieTitleStorage,
@@ -78,15 +77,15 @@ export default function Search({
   let saveAndDisplaySearchResults = (res) => {
     /// when a movie is not detected the API does not return an Error, instead it returns...
     //// the response property as a string "False". So I made two seperate error handlers
-    if (res.data.Response === "False") {
+    if (res.Response === "False") {
       toggleErrorOccurred(true);
-      setErrorMessage(res.data.Error);
+      setErrorMessage(res.Error);
       clearSearch();
       return;
     }
 
     let movieList = [];
-    res.data.Search.map((movie, i) => {
+    res.map((movie, i) => {
       let movieInWatchList = findMovieInWatchList(movie);
       if (movie.Type === "movie" && movieInWatchList === null) {
         movie.Review = 0;
@@ -131,25 +130,12 @@ export default function Search({
     event.preventDefault();
     toggleErrorOccurred(false);
 
-    const options = {
-      method: "GET",
-      url: "https://movie-database-alternative.p.rapidapi.com/",
-      params: { s: title, r: "json" },
-      headers: {
-        "X-RapidAPI-Key": "",
-        "X-RapidAPI-Host": "movie-database-alternative.p.rapidapi.com",
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        saveAndDisplaySearchResults(response);
-      })
-      .catch(function (error) {
-        toggleErrorOccurred(true);
-        setErrorMessage(error);
-      });
+    const requestRes = await fetch("api/searchMovies", {
+      method: "POST",
+      body: title,
+    });
+    const movieReqRes = await requestRes.json();
+    saveAndDisplaySearchResults(movieReqRes);
   };
 
   return (
