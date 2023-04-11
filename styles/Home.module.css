@@ -41,10 +41,13 @@
   margin-left: 1rem;
 }
 
-.searchRes{
+.cardDisplay{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 80vw;
 }
 
 .card{

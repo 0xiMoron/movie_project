@@ -96,7 +96,7 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
           onClick={clearWatchList}
         />
       </section>
-      <section className={styles.searchRes}>
+      <section className={styles.cardDisplay}>
         {savedWatchList !== [] &&
         savedWatchList !== null &&
         typeof savedWatchList !== "undefined" ? (

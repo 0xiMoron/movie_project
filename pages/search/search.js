@@ -169,7 +169,7 @@ export default function Search({
           <AlertDescription maxWidth="sm">{cardAlert}</AlertDescription>
         </Alert>
       ) : null}
-      <section className={styles.searchRes}>
+      <section className={styles.cardDisplay}>
         {searchResults !== [] &&
         searchResults !== null &&
         typeof searchResults !== "undefined"
