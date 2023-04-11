@@ -9,14 +9,12 @@ import {
   Image,
   Alert,
   AlertIcon,
-  AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
 import styles from "@/styles/Home.module.css";
 import {
   deleteLocalStorageVariable,
   getLocalStorageArray,
-  setAndReturnLocalStorageArray,
 } from "@/utils/localStorageUtils";
 import { WatchListedMoviesStorage } from "@/constants/constantVars";
 import {
@@ -106,7 +104,13 @@ export default function WatchList({ savedWatchList, setSavedWatchList }) {
             return (
               <Card className={styles.card} key={i}>
                 <CardBody className={styles.cardBody}>
-                  <Heading className={styles.cardTitle} size="lg">
+                  <Heading
+                    className={styles.cardTitle}
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    width="90%"
+                    whiteSpace="nowrap"
+                    fontSize="1.2rem">
                     {el.Title}
                   </Heading>
                   {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}

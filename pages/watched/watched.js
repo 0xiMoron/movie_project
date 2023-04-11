@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { IconButton, Card, Heading, CardBody, Image } from "@chakra-ui/react";
 import styles from "@/styles/Home.module.css";
 import { getLocalStorageArray } from "@/utils/localStorageUtils";
@@ -11,10 +11,6 @@ import {
 } from "@/utils/watchedUtils";
 
 export default function Watched({ watchedMovies, setWatchedMovies }) {
-  //   useEffect(() => {
-  //     deleteLocalStorageVariable(WatchedMoviesStorage);
-  //   }, []);
-
   let handleDeleteFromWatchedEvent = (event, movie) => {
     deleteMovieFromWatched(movie);
     toggleWatchListMoviesWatchedStatus(movie);
@@ -36,7 +32,13 @@ export default function Watched({ watchedMovies, setWatchedMovies }) {
             return (
               <Card className={styles.card} key={i}>
                 <CardBody className={styles.cardBody}>
-                  <Heading className={styles.cardTitle} size="lg">
+                  <Heading
+                    className={styles.cardTitle}
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    width="90%"
+                    whiteSpace="nowrap"
+                    fontSize="1.2rem">
                     {el.Title}
                   </Heading>
                   {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}

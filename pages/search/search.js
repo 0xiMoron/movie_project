@@ -17,12 +17,10 @@ import styles from "@/styles/Home.module.css";
 import {
   setLocalStorageVariable,
   setAndReturnLocalStorageArray,
-  getLocalStorageVariable,
   deleteLocalStorageVariable,
-  getLocalStorageArray,
 } from "@/utils/localStorageUtils";
 import { SearchIcon, AddIcon, SmallCloseIcon } from "@chakra-ui/icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   SearchedMoviesStorage,
   SearchedMovieTitleStorage,
@@ -45,10 +43,6 @@ export default function Search({
   const [errorOccurred, toggleErrorOccurred] = useState(false);
   const [alertThrown, toggleAlert] = useState(false);
   const [cardAlert, setCardAlert] = useState("");
-
-  let updateMovieResults = () => {
-    setSearchResults(getLocalStorageArray(SearchedMoviesStorage));
-  };
 
   let displayCardAlert = (movie) => {
     toggleAlert(true);
@@ -183,7 +177,13 @@ export default function Search({
               return (
                 <Card className={styles.card} key={i}>
                   <CardBody className={styles.cardBody}>
-                    <Heading className={styles.cardTitle} size="md">
+                    <Heading
+                      className={styles.cardTitle}
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      width="90%"
+                      whiteSpace="nowrap"
+                      fontSize="1.2rem">
                       {el.Title}
                     </Heading>
                     {/* NEED TO ADD DEFAULT FOR IMAGE IF NO IMAGE */}

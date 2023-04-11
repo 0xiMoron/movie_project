@@ -51,14 +51,14 @@
   margin: 1rem;
   display: flex;
   justify-content: center;
-  max-width: 28%;
+  max-width: 22%;
   height: 3%;
   min-width: 10rem !important;
   min-height: 20rem;
 }
 
 .poster{
-  max-height: 50%;
+  height: 40%;
 }
 .cardTitle{
   margin-bottom: 1rem;
