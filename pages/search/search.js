@@ -12,6 +12,7 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Spinner,
 } from "@chakra-ui/react";
 import styles from "@/styles/Home.module.css";
 import {
@@ -43,6 +44,7 @@ export default function Search({
   const [errorOccurred, toggleErrorOccurred] = useState(false);
   const [alertThrown, toggleAlert] = useState(false);
   const [cardAlert, setCardAlert] = useState("");
+  const [isLoading, toggleIsLoading] = useState(false);
 
   let displayCardAlert = (movie) => {
     toggleAlert(true);
@@ -122,11 +124,18 @@ export default function Search({
     // If there is a displayed error this will shut it off
     toggleErrorOccurred(false);
 
+    // turn on the spinner
+    toggleIsLoading(true);
+
     // setting the request to post made it really easy to pass the title as a body
     const requestRes = await fetch("api/searchMovies", {
       method: "POST",
       body: title,
     });
+
+    // turn off the spinner
+    toggleIsLoading(false);
+
     const movieReqRes = await requestRes.json();
     saveAndDisplaySearchResults(movieReqRes);
   };
@@ -168,11 +177,22 @@ export default function Search({
           />
         </form>
       </section>
+
       {alertThrown ? (
         <Alert status="success">
           <AlertIcon />
           <AlertDescription maxWidth="sm">{cardAlert}</AlertDescription>
         </Alert>
+      ) : null}
+
+      {isLoading ? (
+        <Spinner
+          className={styles.spinner}
+          thickness="4px"
+          size="xl"
+          marginTop="15vh"
+          marginLeft="45vw"
+        />
       ) : null}
       <section className={styles.cardDisplay}>
         {searchResults !== [] &&
